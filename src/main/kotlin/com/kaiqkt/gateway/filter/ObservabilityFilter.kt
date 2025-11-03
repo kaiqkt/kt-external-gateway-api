@@ -26,14 +26,13 @@ class ObservabilityFilter {
 
     fun logAfter(): (ServerRequest, ServerResponse) -> ServerResponse {
         return { _, response ->
-            MDC.put("session_id", response.headers().getFirst("X-Session-Id"))
-            MDC.put("user_id", response.headers().getFirst("X-User-Id"))
-
             //resource server id
             //status code
             //historigram resoose
 
             log.info("Downstream request responded with status code ${response.statusCode()}")
+
+            MDC.clear()
 
             response
         }

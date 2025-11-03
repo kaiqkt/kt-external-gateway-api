@@ -33,14 +33,11 @@ class ObservabilityFilterTest {
         val request = MockHttpServletRequest("POST", "/user/123/associate")
             .let { ServerRequest.create(it, listOf()) }
         val response = ServerResponse.created(URI.create("/user/123/associate"))
-            .header("X-Session-Id", "123")
-            .header("X-User-Id", "123")
             .header("X-Request-Id", "123")
             .build()
 
         observabilityFilter.logAfter().invoke(request, response)
 
-        assertEquals("123", MDC.get("session_id"))
-        assertEquals("123", MDC.get("user_id"))
+       assertNull(MDC.get("X-Request-Id"))
     }
 }
