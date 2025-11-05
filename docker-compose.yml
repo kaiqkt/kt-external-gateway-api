@@ -22,7 +22,7 @@ services:
   kt-authentication-api-g:
     image: kaiqkt/kt-authentication-api:local
     environment:
-      POSTGRESQL_URL: jdbc:postgresql://postgresql-ig:5432/gateway-db
+      POSTGRESQL_URL: jdbc:postgresql://postgresql-g:5432/gateway-db
       POSTGRESQL_USERNAME: default_user
       POSTGRESQL_PASSWORD: pwd
       AUTHENTICATION_SESSION_TTL: 604800
