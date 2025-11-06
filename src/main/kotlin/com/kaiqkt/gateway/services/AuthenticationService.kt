@@ -11,12 +11,14 @@ import kotlin.collections.firstOrNull
 class AuthenticationService(
     private val authenticationClient: AuthenticationClient,
 ) {
-    fun introspect(accessToken: String): Introspect? {
-        return authenticationClient.introspect(accessToken)
-    }
+    fun introspect(accessToken: String): Introspect? = authenticationClient.introspect(accessToken)
 
     @Cacheable(value = ["policies"], key = "#method.concat(#clientId)", unless = "#result == null")
-    fun findPolicy(method: String, uri: String, clientId: String): Policy? {
+    fun findPolicy(
+        method: String,
+        uri: String,
+        clientId: String,
+    ): Policy? {
         val client = authenticationClient.findClientById(clientId) ?: return null
         val policies = client.policies
 
@@ -27,7 +29,9 @@ class AuthenticationService(
         return policies.firstOrNull { matchPolicy(method, uri, it) }
     }
 
-    private fun matchPolicy(method: String, uri: String, policy: Policy): Boolean {
-        return policy.method == method && (policy.uri == uri || policy.uri.toRegex().matches(uri))
-    }
+    private fun matchPolicy(
+        method: String,
+        uri: String,
+        policy: Policy,
+    ): Boolean = policy.method == method && (policy.uri == uri || policy.uri.toRegex().matches(uri))
 }

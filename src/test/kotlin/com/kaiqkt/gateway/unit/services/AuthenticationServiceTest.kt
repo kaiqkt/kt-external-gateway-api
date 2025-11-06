@@ -1,14 +1,14 @@
 package com.kaiqkt.gateway.unit.services
 
-import com.kaiqkt.gateway.unit.models.IntrospectSampler
-import com.kaiqkt.gateway.unit.models.PolicySampler
 import com.kaiqkt.gateway.resources.AuthenticationClient
 import com.kaiqkt.gateway.services.AuthenticationService
 import com.kaiqkt.gateway.unit.models.ClientSampler
+import com.kaiqkt.gateway.unit.models.IntrospectSampler
+import com.kaiqkt.gateway.unit.models.PolicySampler
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import java.util.*
+import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -27,18 +27,18 @@ class AuthenticationServiceTest {
         verify { authenticationService.introspect(any()) }
     }
 
-
     @Test
     fun `given a method, uri and client id when found a client without policies should return null`() {
         val client = ClientSampler.sample(policy = null)
 
-        every { authenticationClient.findClientById( any()) } returns client
+        every { authenticationClient.findClientById(any()) } returns client
 
-        val response = authenticationService.findPolicy(
-            "GET",
-            "/v1/users",
-            UUID.randomUUID().toString()
-        )
+        val response =
+            authenticationService.findPolicy(
+                "GET",
+                "/v1/users",
+                UUID.randomUUID().toString(),
+            )
 
         verify { authenticationClient.findClientById(any()) }
 
@@ -49,13 +49,14 @@ class AuthenticationServiceTest {
     fun `given a method, uri and client id when found a policy with exact uri should return a policy`() {
         val client = ClientSampler.sample()
 
-        every { authenticationClient.findClientById( any()) } returns client
+        every { authenticationClient.findClientById(any()) } returns client
 
-        val response = authenticationService.findPolicy(
-            "GET",
-            "/v1/users",
-            UUID.randomUUID().toString()
-        )
+        val response =
+            authenticationService.findPolicy(
+                "GET",
+                "/v1/users",
+                UUID.randomUUID().toString(),
+            )
 
         verify { authenticationClient.findClientById(any()) }
 
@@ -67,13 +68,14 @@ class AuthenticationServiceTest {
     fun `given a method, uri and client id when found a policy that matches a uri should return a policy`() {
         val client = ClientSampler.sample(PolicySampler.sample(uri = "/v1/users/[^/]+/associate"))
 
-        every { authenticationClient.findClientById( any()) } returns client
+        every { authenticationClient.findClientById(any()) } returns client
 
-        val response = authenticationService.findPolicy(
-            "GET",
-            "/v1/users/1234/associate",
-            UUID.randomUUID().toString()
-        )
+        val response =
+            authenticationService.findPolicy(
+                "GET",
+                "/v1/users/1234/associate",
+                UUID.randomUUID().toString(),
+            )
 
         verify { authenticationClient.findClientById(any()) }
 
@@ -85,13 +87,14 @@ class AuthenticationServiceTest {
     fun `given a method, uri and client id when found a policy that matches a uri with query params should return a policy`() {
         val client = ClientSampler.sample(PolicySampler.sample(uri = "/v1/users/[^/]+/associate(?:\\?.*)?$"))
 
-        every { authenticationClient.findClientById( any()) } returns client
+        every { authenticationClient.findClientById(any()) } returns client
 
-        val response = authenticationService.findPolicy(
-            "GET",
-            "/v1/users/1234/associate?role_id=1234",
-            UUID.randomUUID().toString()
-        )
+        val response =
+            authenticationService.findPolicy(
+                "GET",
+                "/v1/users/1234/associate?role_id=1234",
+                UUID.randomUUID().toString(),
+            )
 
         verify { authenticationClient.findClientById(any()) }
 
@@ -103,13 +106,14 @@ class AuthenticationServiceTest {
     fun `given a method, uri and client id when found not policy that matches a uri with query params should return null`() {
         val client = ClientSampler.sample(PolicySampler.sample(uri = "/v1/users/[^/]+/associate(?:\\?.*)?$"))
 
-        every { authenticationClient.findClientById( any()) } returns client
+        every { authenticationClient.findClientById(any()) } returns client
 
-        val response = authenticationService.findPolicy(
-            "GET",
-            "/v1/users/1234/associate/123",
-            UUID.randomUUID().toString()
-        )
+        val response =
+            authenticationService.findPolicy(
+                "GET",
+                "/v1/users/1234/associate/123",
+                UUID.randomUUID().toString(),
+            )
 
         verify { authenticationClient.findClientById(any()) }
 
@@ -120,13 +124,14 @@ class AuthenticationServiceTest {
     fun `given a method, uri and client id when not found a policy with method or uri should return null`() {
         val client = ClientSampler.sample()
 
-        every { authenticationClient.findClientById( any()) } returns client
+        every { authenticationClient.findClientById(any()) } returns client
 
-        val response = authenticationService.findPolicy(
-            "POST",
-            "/v1/users/test",
-            UUID.randomUUID().toString()
-        )
+        val response =
+            authenticationService.findPolicy(
+                "POST",
+                "/v1/users/test",
+                UUID.randomUUID().toString(),
+            )
 
         verify { authenticationClient.findClientById(any()) }
 
@@ -135,14 +140,14 @@ class AuthenticationServiceTest {
 
     @Test
     fun `given a method, uri and client id when not found any policies should return null`() {
+        every { authenticationClient.findClientById(any()) } returns null
 
-        every { authenticationClient.findClientById( any()) } returns null
-
-        val response = authenticationService.findPolicy(
-            "POST",
-            "/v1/users",
-            UUID.randomUUID().toString()
-        )
+        val response =
+            authenticationService.findPolicy(
+                "POST",
+                "/v1/users",
+                UUID.randomUUID().toString(),
+            )
 
         verify { authenticationClient.findClientById(any()) }
 

@@ -5,5 +5,5 @@ data class Introspect(
     val sid: String,
     val sub: String,
     val roles: List<String>,
-    val permissions: List<String>
+    val permissions: List<String>,
 )

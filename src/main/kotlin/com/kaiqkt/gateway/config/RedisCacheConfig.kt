@@ -7,17 +7,16 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.cache.RedisCacheConfiguration
 import java.time.Duration
 
-
 @Configuration
 @EnableCaching
 class RedisCacheConfig(
-    @param:Value("\${policies-cache-ttl}")
-    private val cacheTtl: Long
+    @param:Value($$"${policies-cache-ttl}")
+    private val cacheTtl: Long,
 ) {
     @Bean
-    fun cacheConfiguration(): RedisCacheConfiguration {
-        return RedisCacheConfiguration.defaultCacheConfig()
+    fun cacheConfiguration(): RedisCacheConfiguration =
+        RedisCacheConfiguration
+            .defaultCacheConfig()
             .entryTtl(Duration.ofHours(cacheTtl))
             .disableCachingNullValues()
-    }
 }

@@ -7,5 +7,5 @@ data class Policy(
     val method: String,
     val isPublic: Boolean,
     val roles: List<String>,
-    val permissions: List<String>
-): Serializable
+    val permissions: List<String>,
+) : Serializable

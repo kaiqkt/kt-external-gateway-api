@@ -15,28 +15,27 @@ import org.springframework.web.servlet.function.RouterFunction
 import org.springframework.web.servlet.function.ServerResponse
 import java.util.function.Supplier
 
-
 @Configuration
 @EnableConfigurationProperties(GatewayProperties::class)
 class GatewayConfig(
     private val securityFilter: SecurityFilter,
     properties: GatewayProperties,
-    context: GenericWebApplicationContext
+    context: GenericWebApplicationContext,
 ) {
-
     init {
         for (resourceServer in properties.resourceServers) {
             context.registerBean(resourceServer.name, RouterFunction::class.java, Supplier { router(resourceServer, properties.clientId) })
         }
     }
 
-
-    private fun router(resourceServer: ResourceServer, clientId: String): RouterFunction<ServerResponse> {
-        return route(resourceServer.name)
+    private fun router(
+        resourceServer: ResourceServer,
+        clientId: String,
+    ): RouterFunction<ServerResponse> =
+        route(resourceServer.name)
             .route(path("${resourceServer.uri}/**"), http())
             .before(uri(resourceServer.host))
             .before(rewritePath("${resourceServer.uri}/(?<segment>.*)", $$"/${segment}"))
             .filter(securityFilter.authentication(clientId))
             .build()
-    }
 }

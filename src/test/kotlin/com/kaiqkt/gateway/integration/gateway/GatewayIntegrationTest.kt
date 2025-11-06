@@ -10,21 +10,22 @@ import org.springframework.http.HttpHeaders
 import kotlin.test.Test
 
 class GatewayIntegrationTest : IntegrationTest() {
-
     @Test
     fun `given a request when does not have policies in cache should call auth service to get them`() {
         AuthenticationHelper.mockSuccessDownstream()
         AuthenticationHelper.mockSuccessfullyFoundClient(
             clientId = clientId,
-            client = ClientSampler.sample(PolicySampler.sample(isPublic = true, uri = "/auth/v1/users"))
+            client = ClientSampler.sample(PolicySampler.sample(isPublic = true, uri = "/auth/v1/users")),
         )
 
-        RestAssured.given()
+        RestAssured
+            .given()
             .get("/api/first/auth/v1/users")
             .then()
             .statusCode(200)
 
-        RestAssured.given()
+        RestAssured
+            .given()
             .get("/api/first/auth/v1/users")
             .then()
             .statusCode(200)
@@ -37,11 +38,12 @@ class GatewayIntegrationTest : IntegrationTest() {
     fun `given a request to resource server should continue with downstream`() {
         AuthenticationHelper.mockSuccessfullyFoundClient(
             clientId = clientId,
-            client = ClientSampler.sample(PolicySampler.sample(isPublic = true, uri = "/auth/v1/users"))
+            client = ClientSampler.sample(PolicySampler.sample(isPublic = true, uri = "/auth/v1/users")),
         )
         AuthenticationHelper.mockSuccessDownstream()
 
-        RestAssured.given()
+        RestAssured
+            .given()
             .get("/api/second/auth/v1/users")
             .then()
             .statusCode(200)
@@ -54,15 +56,16 @@ class GatewayIntegrationTest : IntegrationTest() {
     fun `given a request when user has correct permissions should continue with downstream`() {
         AuthenticationHelper.mockSuccessfullyFoundClient(
             clientId = clientId,
-            client = ClientSampler.sample(PolicySampler.sample(uri = "/auth/v1/users", roles = listOf("USER")))
+            client = ClientSampler.sample(PolicySampler.sample(uri = "/auth/v1/users", roles = listOf("USER"))),
         )
         AuthenticationHelper.mockSuccessfullyIntrospect(
             "access-token",
-            IntrospectSampler.sample(active = true, roles = listOf("USER"))
+            IntrospectSampler.sample(active = true, roles = listOf("USER")),
         )
         AuthenticationHelper.mockSuccessDownstream()
 
-        RestAssured.given()
+        RestAssured
+            .given()
             .header(HttpHeaders.AUTHORIZATION, "access-token")
             .get("/api/first/auth/v1/users")
             .then()
@@ -75,7 +78,8 @@ class GatewayIntegrationTest : IntegrationTest() {
 
     @Test
     fun `given a request when not found any policies should return http status 401`() {
-        RestAssured.given()
+        RestAssured
+            .given()
             .get("/api/first/auth/v1/users")
             .then()
             .statusCode(401)
@@ -87,7 +91,8 @@ class GatewayIntegrationTest : IntegrationTest() {
     fun `given a request when access token is invalid should return http status 401`() {
         AuthenticationHelper.mockSuccessfullyFoundClient(clientId = clientId, client = ClientSampler.sample())
 
-        RestAssured.given()
+        RestAssured
+            .given()
             .get("/api/first/auth/v1/users")
             .then()
             .statusCode(401)
@@ -99,9 +104,13 @@ class GatewayIntegrationTest : IntegrationTest() {
 
     @Test
     fun `given a request when session not found for introspection should return http status 401`() {
-        AuthenticationHelper.mockSuccessfullyFoundClient(clientId = clientId, client = ClientSampler.sample(PolicySampler.sample(uri = "/auth/v1/users")))
+        AuthenticationHelper.mockSuccessfullyFoundClient(
+            clientId = clientId,
+            client = ClientSampler.sample(PolicySampler.sample(uri = "/auth/v1/users")),
+        )
 
-        RestAssured.given()
+        RestAssured
+            .given()
             .header(HttpHeaders.AUTHORIZATION, "access-token")
             .get("/api/first/auth/v1/users")
             .then()
@@ -113,10 +122,14 @@ class GatewayIntegrationTest : IntegrationTest() {
 
     @Test
     fun `given a request when session is inactivated should return http status 401`() {
-        AuthenticationHelper.mockSuccessfullyFoundClient(clientId = clientId, client = ClientSampler.sample(PolicySampler.sample(uri = "/auth/v1/users")))
+        AuthenticationHelper.mockSuccessfullyFoundClient(
+            clientId = clientId,
+            client = ClientSampler.sample(PolicySampler.sample(uri = "/auth/v1/users")),
+        )
         AuthenticationHelper.mockSuccessfullyIntrospect("access-token", IntrospectSampler.sample())
 
-        RestAssured.given()
+        RestAssured
+            .given()
             .header(HttpHeaders.AUTHORIZATION, "access-token")
             .get("/api/first/auth/v1/users")
             .then()
@@ -128,10 +141,14 @@ class GatewayIntegrationTest : IntegrationTest() {
 
     @Test
     fun `given a request when user does not have the necessary authorities should return http status 401`() {
-        AuthenticationHelper.mockSuccessfullyFoundClient(clientId = clientId, client = ClientSampler.sample(PolicySampler.sample(uri = "/auth/v1/users")))
+        AuthenticationHelper.mockSuccessfullyFoundClient(
+            clientId = clientId,
+            client = ClientSampler.sample(PolicySampler.sample(uri = "/auth/v1/users")),
+        )
         AuthenticationHelper.mockSuccessfullyIntrospect("access-token", IntrospectSampler.sample(true))
 
-        RestAssured.given()
+        RestAssured
+            .given()
             .header(HttpHeaders.AUTHORIZATION, "access-token")
             .get("/api/first/auth/v1/users")
             .then()

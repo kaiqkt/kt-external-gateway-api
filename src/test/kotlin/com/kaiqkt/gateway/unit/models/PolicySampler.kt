@@ -8,12 +8,13 @@ object PolicySampler {
         isPublic: Boolean = false,
         method: String = "GET",
         roles: List<String> = emptyList(),
-        permissions: List<String> = emptyList()
-    ): Policy = Policy(
-        uri = uri,
-        method = method,
-        isPublic = isPublic,
-        roles = roles,
-        permissions = permissions
-    )
+        permissions: List<String> = emptyList(),
+    ): Policy =
+        Policy(
+            uri = uri,
+            method = method,
+            isPublic = isPublic,
+            roles = roles,
+            permissions = permissions,
+        )
 }

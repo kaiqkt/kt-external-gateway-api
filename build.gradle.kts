@@ -1,9 +1,10 @@
 plugins {
-	kotlin("jvm") version "2.2.21"
-	kotlin("plugin.spring") version "2.2.21"
-	id("org.springframework.boot") version "3.5.7"
-	id("io.spring.dependency-management") version "1.1.7"
+    kotlin("jvm") version "2.2.21"
+    kotlin("plugin.spring") version "2.2.21"
+    id("org.springframework.boot") version "3.5.7"
+    id("io.spring.dependency-management") version "1.1.7"
     id("jacoco")
+    id("org.jlleitschuh.gradle.ktlint") version "13.0.0"
 }
 
 group = "com.kaiqkt"
@@ -11,9 +12,9 @@ version = "0.0.1-SNAPSHOT"
 description = "Demo project for Spring Boot"
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 jacoco {
@@ -21,14 +22,14 @@ jacoco {
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 extra["springCloudVersion"] = "2025.0.0"
 
 dependencies {
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webmvc")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.springframework.cloud:spring-cloud-starter-gateway-server-webmvc")
     implementation("net.logstash.logback:logstash-logback-encoder:9.0")
     implementation("ch.qos.logback:logback-classic:1.5.20")
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
@@ -44,25 +45,25 @@ dependencies {
     }
     testImplementation("io.rest-assured:rest-assured")
     testImplementation("io.mockk:mockk:1.14.6")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 dependencyManagement {
-	imports {
-		mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-	}
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+    }
 }
 
 kotlin {
-	compilerOptions {
-		freeCompilerArgs.addAll("-Xjsr305=strict")
-	}
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xjsr305=strict")
+    }
 }
 
 tasks.withType<Test> {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 val excludePackages: List<String> by extra {
@@ -71,13 +72,12 @@ val excludePackages: List<String> by extra {
     )
 }
 
-
 @Suppress("UNCHECKED_CAST")
 fun ignorePackagesForReport(jacocoBase: JacocoReportBase) {
     jacocoBase.classDirectories.setFrom(
         sourceSets.main.get().output.asFileTree.matching {
             exclude(jacocoBase.project.extra.get("excludePackages") as List<String>)
-        }
+        },
     )
 }
 
@@ -87,7 +87,6 @@ tasks.withType<JacocoReport> {
     }
     ignorePackagesForReport(this)
 }
-
 
 tasks.withType<JacocoCoverageVerification> {
     violationRules {

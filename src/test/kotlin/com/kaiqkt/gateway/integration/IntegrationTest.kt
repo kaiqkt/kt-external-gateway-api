@@ -16,7 +16,6 @@ import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.cache.CacheManager
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
-import org.testcontainers.containers.GenericContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 
@@ -38,29 +37,32 @@ class IntegrationTest {
 
     @BeforeAll
     fun beforeAll() {
-        RestAssured.config = RestAssured.config()
-            .objectMapperConfig(
-                ObjectMapperConfig(ObjectMapperType.JACKSON_2)
-                    .jackson2ObjectMapperFactory { _, _ -> mapper }
-            )
+        RestAssured.config =
+            RestAssured
+                .config()
+                .objectMapperConfig(
+                    ObjectMapperConfig(ObjectMapperType.JACKSON_2)
+                        .jackson2ObjectMapperFactory { _, _ -> mapper },
+                )
 
         RestAssured.baseURI = "http://localhost:$port"
     }
 
     @BeforeEach
-    fun beforeEach(){
+    fun beforeEach() {
         AuthenticationHelper.reset()
-        cacheManager.cacheNames.stream()
+        cacheManager.cacheNames
+            .stream()
             .forEach { cacheName -> cacheManager.getCache(cacheName)?.clear() }
     }
 
-
     companion object {
         @Container
-        private val redisContainer = RedisContainer("redis:7.2.4-alpine").apply {
-            withExposedPorts(6379)
-            start()
-        }
+        private val redisContainer =
+            RedisContainer("redis:7.2.4-alpine").apply {
+                withExposedPorts(6379)
+                start()
+            }
 
         @JvmStatic
         @DynamicPropertySource

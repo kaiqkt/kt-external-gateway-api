@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 class AuthenticationClient(
     @param:Value($$"${authentication-service-url}")
     private val authenticationServiceUrl: String,
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
 ) {
     private val log = LoggerFactory.getLogger(AuthenticationClient::class.java)
 
@@ -38,9 +38,11 @@ class AuthenticationClient(
 
     fun introspect(accessToken: String): Introspect? {
         try {
-            val (_, response, result) = Fuel.get("$authenticationServiceUrl/v1/oauth/introspect")
-                .header(HttpHeaders.AUTHORIZATION, accessToken)
-                .response()
+            val (_, response, result) =
+                Fuel
+                    .get("$authenticationServiceUrl/v1/oauth/introspect")
+                    .header(HttpHeaders.AUTHORIZATION, accessToken)
+                    .response()
 
             if (response.isSuccessful) {
                 return objectMapper.readValue(result.get(), Introspect::class.java)

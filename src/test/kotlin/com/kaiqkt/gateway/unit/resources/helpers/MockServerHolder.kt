@@ -6,7 +6,6 @@ import org.mockserver.model.HttpRequest
 import org.mockserver.verify.VerificationTimes
 
 abstract class MockServerHolder {
-
     companion object {
         private const val PORT: Int = 8081
         private val mockServer: ClientAndServer = ClientAndServer.startClientAndServer(PORT)
@@ -21,10 +20,13 @@ abstract class MockServerHolder {
 
     fun reset(): MockServerClient = mockServer.clear(HttpRequest.request().withPath("${domainPath()}/.*"))
 
-    protected fun verifyRequest(httpRequest: HttpRequest, times: Int) {
+    protected fun verifyRequest(
+        httpRequest: HttpRequest,
+        times: Int,
+    ) {
         mockServer.verify(
             httpRequest,
-            VerificationTimes.exactly(times)
+            VerificationTimes.exactly(times),
         )
     }
 }

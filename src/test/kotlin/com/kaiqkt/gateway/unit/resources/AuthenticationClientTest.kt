@@ -11,7 +11,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class AuthenticationClientTest {
-
     private val authenticationUrl = AuthenticationHelper.baseUrl()
     private val objectMapper = ObjectMapperConfig().objectMapper()
     private val authenticationClient = AuthenticationClient(authenticationUrl, objectMapper)
