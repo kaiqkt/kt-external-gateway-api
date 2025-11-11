@@ -2,9 +2,9 @@ name: Run Tests and Build Docker Image
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   run-tests:
