@@ -20,7 +20,7 @@ services:
       - postgres-ig:/var/lib/postgresql
 
   kt-authentication-api-g:
-    image: kaiqkt/kt-authentication-api:local
+    image: ghcr.io/kaiqkt/kt-authentication-api:latest
     environment:
       POSTGRESQL_URL: jdbc:postgresql://postgresql-g:5432/gateway-db
       POSTGRESQL_USERNAME: default_user
@@ -33,7 +33,7 @@ services:
       - "8081:8080"
 
   kt-gateway-api-g:
-    image: kaiqkt/kt-gateway-api:local
+    image: ghcr.io/kaiqkt/kt-gateway-api:latest
     environment:
       REDIS_HOST: redis-ig
       REDIS_PORT: 6379
