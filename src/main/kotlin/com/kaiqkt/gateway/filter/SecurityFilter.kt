@@ -39,7 +39,7 @@ class SecurityFilter(
                     Constants.Metrics.RESOURCE_SERVER,
                     resourceServerHost,
                     Constants.Metrics.STATUS,
-                    "policy_not_found",
+                    Constants.Metrics.ACCESS_DENIED,
                 )
 
                 return@HandlerFilterFunction ServerResponse.status(HttpStatus.UNAUTHORIZED).build()
@@ -53,7 +53,7 @@ class SecurityFilter(
                     Constants.Metrics.RESOURCE_SERVER,
                     resourceServerHost,
                     Constants.Metrics.STATUS,
-                    "public_access",
+                    Constants.Metrics.PUBLIC_ACCESS,
                 )
 
                 val modifiedRequest =
@@ -75,7 +75,7 @@ class SecurityFilter(
                     Constants.Metrics.RESOURCE_SERVER,
                     resourceServerHost,
                     Constants.Metrics.STATUS,
-                    "invalid_access_token",
+                    Constants.Metrics.ACCESS_DENIED,
                 )
 
                 return@HandlerFilterFunction ServerResponse.status(HttpStatus.UNAUTHORIZED).build()
@@ -91,7 +91,7 @@ class SecurityFilter(
                     Constants.Metrics.RESOURCE_SERVER,
                     resourceServerHost,
                     Constants.Metrics.STATUS,
-                    "session_not_found",
+                    Constants.Metrics.ACCESS_DENIED,
                 )
 
                 return@HandlerFilterFunction ServerResponse.status(HttpStatus.UNAUTHORIZED).build()
@@ -108,7 +108,7 @@ class SecurityFilter(
                     Constants.Metrics.RESOURCE_SERVER,
                     resourceServerHost,
                     Constants.Metrics.STATUS,
-                    "inactive_session",
+                    Constants.Metrics.ACCESS_DENIED,
                 )
 
                 log.info("Request with inactivated session ${introspect.sid} of user ${introspect.sub}")
@@ -123,7 +123,7 @@ class SecurityFilter(
                     Constants.Metrics.RESOURCE_SERVER,
                     resourceServerHost,
                     Constants.Metrics.STATUS,
-                    "protect_access",
+                    Constants.Metrics.PROTECTED_ACCESS,
                 )
 
                 val modifiedRequest =
@@ -143,7 +143,7 @@ class SecurityFilter(
                 Constants.Metrics.RESOURCE_SERVER,
                 resourceServerHost,
                 Constants.Metrics.STATUS,
-                "forbidden",
+                Constants.Metrics.FORBIDDEN,
             )
 
             log.info("Request cancelled due user ${introspect.sub} does not have the correct authorities")
