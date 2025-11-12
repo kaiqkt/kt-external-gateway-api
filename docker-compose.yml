@@ -33,9 +33,9 @@ services:
       - "8081:8080"
 
   kt-gateway-api-g:
-    image: ghcr.io/kaiqkt/kt-gateway-api:latest
+    image: kaiqkt/kt-gateway-api:local
     environment:
-      REDIS_HOST: redis-ig
+      REDIS_HOST: redis-g
       REDIS_PORT: 6379
       REDIS_PASSWORD: "pwd"
       KT_GATEWAY_ID: 01K97V58JAZ2F2C5BGEJQVJVT7
